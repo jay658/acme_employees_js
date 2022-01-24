@@ -90,20 +90,18 @@ function findEmployeeByName(employee, list){
   spacer('generateManagementTree')
   //given a list of employees, generate a tree like structure for the employees, starting with the employee who has no manager. Each employee will have a reports property which is an array of the employees who report directly to them.
 
-  function boss(list){
-      return list.reduce((acc, item)=>{
-        if(item.managerId === undefined) acc = item
-        return acc
-      })
+  function generateManagementTree(employees){
+    if (employees.length === 0) return []
+    const tree = employees.forEach((element)=>{
+        const manager = findManagerFor (element, employees)
+        const index = employees.indexOf(element)
+        if(!employees.includes(manager)){
+            element.reports = []
+            element.reports.push(generateManagementTree(employees.slice(index, index+1)))
+        }
+    },)
+    return tree
   }
-
-//   function generateManagementTree(employees){
-//     return employees.reduce((acc, item)=>{
-//         let index = employees.indexOf(acc)
-//         item.reports = generateManagementTree(employees.slice())
-
-//     }, boss(list))
-//   }
 
   console.log(JSON.stringify(generateManagementTree(employees), null, 2));
   /*
