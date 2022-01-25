@@ -65,13 +65,19 @@ function findEmployeeByName(employee, list){
 
   spacer('findManagementChain for moe')
 
-  function findManagementChainForEmployee(employee, list){
-    let management = []
-    while(employee.managerId !== undefined){
-        employee = findManagerFor(employee, list)
-        management.unshift(employee)
-    }
-    return management
+  // function findManagementChainForEmployee(employee, list){
+  //   let management = []
+  //   while(employee.managerId !== undefined){
+  //       employee = findManagerFor(employee, list)
+  //       management.unshift(employee)
+  //   }
+  //   return management
+  // }
+
+  function findManagementChainForEmployee(employee, employees){
+    if(employee.managerId === undefined) return []
+    const manager = employees.filter(person => person.id === employee.managerId)
+    return [...findManagementChainForEmployee(manager[0], employees), manager]
   }
 
   //given an employee and a list of employees, return a the management chain for that employee. The management chain starts from the employee with no manager with the passed in employees manager 
