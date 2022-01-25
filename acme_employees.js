@@ -134,9 +134,9 @@ function findEmployeeByName(employee, list){
       boss.reports = [...under]
       const index = employees.indexOf(boss)
       employees.splice(index, 1)
-      return boss.reports.push(generateManagementTree(employees))
+      generateManagementTree(employees)
     })
-
+    
     return bossArr[0]
   }
 
