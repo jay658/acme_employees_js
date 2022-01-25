@@ -127,16 +127,15 @@ function findEmployeeByName(employee, list){
 
   function generateManagementTree(employees){
     const bossArr = employees.filter(employee=>employees.includes(findManagerFor(employee, employees)) === false)
-    if (employees.length === 0) return
+    if (employees.length === 0) return []
 
     bossArr.forEach((boss)=>{
       const under = employees.filter(employee => employee.managerId === boss.id)
       boss.reports = [...under]
       const index = employees.indexOf(boss)
       employees.splice(index, 1)
-      generateManagementTree(employees)
     })
-    
+    generateManagementTree(employees)
     return bossArr[0]
   }
 
