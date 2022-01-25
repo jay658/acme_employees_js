@@ -74,10 +74,21 @@ function findEmployeeByName(employee, list){
   //   return management
   // }
 
-  function findManagementChainForEmployee(employee, employees){
-    if(employee.managerId === undefined) return []
-    const manager = employees.filter(person => person.id === employee.managerId)
-    return [...findManagementChainForEmployee(manager[0], employees), manager]
+  // function findManagementChainForEmployee(employee, employees){
+  //   if(employee.managerId === undefined) return []
+  //   const manager = employees.filter(person => person.id === employee.managerId)
+  //   return [...findManagementChainForEmployee(manager[0], employees), manager]
+  // }
+
+  const findManagementChainForEmployee = (employee, employees) => {
+    if (!employee.managerId) return [];
+    const mId = employee.managerId;
+    for (let i in employees) {
+      if (employees[i].id === mId) {
+        const chain = [employees[i]]
+        return chain.concat(findManagementChainForEmployee(employees[i], employees))
+      };
+    }
   }
 
   //given an employee and a list of employees, return a the management chain for that employee. The management chain starts from the employee with no manager with the passed in employees manager 
@@ -96,18 +107,43 @@ function findEmployeeByName(employee, list){
   spacer('generateManagementTree')
   //given a list of employees, generate a tree like structure for the employees, starting with the employee who has no manager. Each employee will have a reports property which is an array of the employees who report directly to them.
 
+
   function generateManagementTree(employees){
-    if (employees.length === 0) return []
-    const tree = employees.forEach((element)=>{
+    const CEOArr = employees.filter(x => x.managerId === undefined)
+    const ceo = CEOArr[0]
+    if (employees.length === 0) return
+    employees.forEach((element)=>{
         const manager = findManagerFor (element, employees)
-        const index = employees.indexOf(element)
         if(!employees.includes(manager)){
+            const index = employees.indexOf(element)
             element.reports = []
-            element.reports.push(generateManagementTree(employees.slice(index, index+1)))
+            employees.splice(index, 1)
+            element.reports.push(generateManagementTree(employees))
+            
         }
     },)
-    return tree
+    return ceo
   }
+
+  // function generateManagementTree(employees){
+  //   const bossArr = employees.filter(employee=>employees.includes(findManagerFor(employee, employees)) === false)
+  //   const CEOArr = employees.filter(x => x.managerId === undefined)
+  //   const ceo = CEOArr[0]
+  //   if (employees.length === 0) return []
+
+  //   employees.forEach((employee)=>{
+  //     const manager = findManagerFor(employee,employees)
+  //     if (bossArr.includes(manager)){
+  //       const boss = bossArr[bossArr.indexOf(manager)]
+  //       const index = employees.indexOf(boss)
+  //       boss.reports = []
+  //       boss.reports.push(employee)
+  //       employees.splice(index, 1)
+  //     }
+  //     generateManagementTree(employees)
+  //   })
+  //   return ceo
+  // }
 
   console.log(JSON.stringify(generateManagementTree(employees), null, 2));
   /*
